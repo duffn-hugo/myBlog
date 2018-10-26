@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11.1
+      
+    working_directory: ~/myBlog
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Hugo
+          command: |
+            mkdir $HOME/src
+            cd $HOME/src
+            git clone https://github.com/gohugoio/hugo.git
+            cd hugo
+            go install --tags extended
+      
+      - run:
+          name: Build website
+          command: hugo
+      
+      - run:
+          name: Push to github.io
+          command: |
+            cd public
+            git add .
+            git commit -m "Update website"
+            git push origin master
